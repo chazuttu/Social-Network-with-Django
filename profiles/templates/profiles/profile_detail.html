@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Profile detail
+{% endblock title %}
+
+{% block content %}
+<div class="ui grid">
+    <br>
+    <!-- {{ object }} -->
+    <div class="row">
+        <div class="four wide column">
+            <img class="ui medium rounded image" src="{{ object.avatar.url }}" alt="">
+            <h1>{{ object.user }}</h1>
+            <div class="ui vertical fluid menu">
+                <div class="item">
+                    Posts
+                    <div class="ui label">{{ object.get_posts_no }}</div>
+                </div>
+                <div class="item">
+                    Likes Given
+                    <div class="ui label">{{ object.get_likes_given_no }}</div>
+                </div>
+                <div class="item">
+                    Likes Received
+                    <div class="ui label">{{ object.get_likes_received_no }}</div>
+                </div>
+                <div class="item">
+                    Friends
+                    <div class="ui label">{{ object.get_friends_no }}</div>
+                </div>
+            </div>
+
+        <!-- Adding to friends. Sending invitations. form -->
+            <!-- First case -->
+            {% if object.user not in rel_receiver and object.user not in rel_sender %}
+                <form action="{% url 'profiles:send-invite' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value="{{object.pk}}">
+                    <button type="submit" class="ui positive basic button mb-5 w-big"><i class="plus square icon"></i>Add to friends</button>
+                </form>
+            {% endif %}
+
+            <!-- Second case -->
+            {% if object.user in rel_receiver and request.user not in object.friends.all %}
+                <button class="ui disabled button mb-5 w-big"><i class="user icon"></i>Waiting for approval</button>
+            {% endif %}
+
+        <!-- Removing from friends form -->
+            <!-- Third case -->
+            {% if request.user in object.friends.all %}
+                <form action="{% url 'profiles:remove-friend' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile_pk" value="{{object.pk}}">
+                    <button type="submit" class="ui negative basic button mb-5 w-big"><i class="minus square icon"></i>Remove from friends</button>
+                </form>
+            {% endif %}
+
+        </div>
+        <div class="twelve wide column">
+            {% if len_posts %}
+                <div class="ui three column grid">
+                    {% for post in posts %}
+                        <div class="column">
+                            <div class="ui segment">
+                                <p style="font-weight: bolder; color: #752975;">{{ post.content }}</p>
+                                <img src="{{post.image.url}}" class='ui small image'>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <h1>No posts of this user .....</h1>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

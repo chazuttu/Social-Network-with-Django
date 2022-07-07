@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+my invites
+{% endblock title %}
+
+{% block content %}
+
+{% if is_empty %}
+    <h1>No invitations here...</h1>
+{% endif %}
+        
+<div class="ui grid centered">
+    <div class="row">
+        {% for obj in qs %}
+            <div class="ui segment fluid" style="margin: 4px;">
+                <div class="three wide column">
+                    <img class="ui small circular image centered" src="{{ obj.avatar.url }}" alt="">
+                </div>
+                <div class="thirteen wide column">
+                    <h3>{{ obj.user }}</h3>
+                    <p>{{ obj.bio }}</p>
+                    <br>
+                    <a href="{{ obj.get_absolute_url }}">
+                        <button class="ui primary button w-big mb-5">See profile</button>
+                    </a>
+
+                    <!-- Accepting the invitations form -->
+                    <form action="{% url 'profiles:accept-invite' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile_pk" value="{{obj.pk}}">
+                        <button type="submit" class="ui positive basic button mb-5 w-big"><i class="check icon"></i>Accept invite</button>
+                    </form>
+
+                    <!-- Rejecting the invitations form -->
+                    <form action="{% url 'profiles:reject-invite' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="profile_pk" value="{{obj.pk}}">
+                        <button type="submit" class="ui negative basic button mb-5 w-big"><i class="close icon"></i>Reject invite</button>
+                    </form>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock content %}

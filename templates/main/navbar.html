@@ -1,0 +1,66 @@
+
+
+{% url 'home-view' as path_to_home %}
+{% url 'posts:main-post-view' as path_to_posts %}
+{% url 'profiles:my-profile-view' as path_to_my_profile %}
+{% url 'profiles:my-invites-view' as path_to_my_invites %}
+{% url 'profiles:invite-profiles-view' as path_to_invites %}
+{% url 'profiles:all-profiles-view' as path_to_all_profiles %}
+
+
+
+<div class="ui inverted menu nav mb-7">
+    <div class="ui container">
+      <a href="{{path_to_home}}" class="{% if request.path == path_to_home %}active{% endif %} item">
+          <h3>FLBook</h3>
+      </a>
+      {% if request.user.is_authenticated %}
+      <a href="{{path_to_posts}}" class="{% if request.path == path_to_posts %}active{% endif %} item" id="nav_item">
+          Board
+      </a>
+      {% endif %}
+  
+      <div class="right menu">
+          {% if request.user.is_authenticated %}
+          <div class="item">
+              <div class="ui floating dropdown icon button teal" id="nav_drop"> Friends
+                  <i class="dropdown icon"></i>
+                  <div class="menu" style="background-color: #1A202C;">
+                      <a href="{{path_to_all_profiles}}" class="{% if request.path == path_to_all_profiles %}active{% endif %} item" id="drop_item">
+                          All Profiles
+                      </a>
+                      <a href="{{path_to_invites}}" class="{% if request.path == path_to_invites %}active{% endif %} item" id="drop_item">
+                          Send Invites
+                      </a>
+                      <a href="{{path_to_my_invites}}" class="{% if request.path == path_to_my_invites %}active{% endif %} item" id="drop_item">
+                          Received Invites &nbsp; <div class="ui purple horizontal label">{{invites_num}}</div>
+                      </a>
+                  </div>
+               </div>
+          </div>
+               <div class="item" >
+                    <form action="{% url 'posts:search' %}" method="GET">
+                        <div class="ui action left icon input" style="color: rgb(108, 234, 243);">
+                            <input class="prompt" type="text" id="query" name='q' placeholder="name of a friend..." style="background-color: #2D3748 !important; color: rgb(108, 234, 243);">
+                            <i class="search icon"></i>
+                            <button type='submit' class="ui button" style="background-color: #233046 !important; color: rgb(108, 234, 243);">Search</button>
+                        </div>
+                    </form>
+              </div>
+          
+              <a href="{{path_to_my_profile}}" class="{% if request.path == path_to_my_profile %}active{% endif %} item" id="nav_item">
+                  <img src="{{picture.url}}" class='ui avatar image'>&nbsp;  <!-- picture from context_processors -->
+                   {{ request.user }}
+              </a>
+  
+              <a href="{% url 'account_logout' %}" class="ui item"  id="nav_item">
+                  Logout
+              </a>
+          {% else %}
+          <a href="{% url 'account_login' %}" class="ui item"  id="nav_item">
+                  Login
+              </a>
+          {% endif %}
+      </div>
+    </div>
+  </div>

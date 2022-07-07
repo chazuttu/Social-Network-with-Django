@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+invite friends
+{% endblock title %}
+
+{% block content %}
+
+<h1>Available to Send Request</h1>
+
+<!-- <ul>
+    {% for item in qs %}
+        <li>{{ item }}</li>
+    {% endfor %}
+</ul> -->
+
+<div class="ui stackable four column grid">
+    {% for asr in qs %}
+    <div class="column">
+        <p>{{ asr }}</p>
+        <img class="ui small image images" src="{{ asr.avatar.url }}" alt="">
+        <p>{{ asr.first_name }}&nbsp;{{ asr.last_name }}</p>
+        <!-- <p>{{ asr.user }}</p> -->
+        <p>{{ asr.bio }}</p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock content %}

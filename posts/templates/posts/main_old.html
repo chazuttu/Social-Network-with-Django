@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Posts
+{% endblock title %}
+
+{% block content %}
+<div class="ui grid">
+    <div class="row">
+        <div class="eleven wide column">
+            {% for obj in qs %}
+                <div class="ui fluid card">
+                    <div class="content">
+                        {{ obj.content }}
+                    </div>
+                    <div class="content">
+                        <form action="{% url 'posts:like-post-view' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="post_id" value="{{obj.id}}">
+                            <button type="submit" class="ui primary button">
+                                {% if profile not in obj.liked.all %}
+                                    <i class="thumbs up icon"></i>&nbsp;Like
+                                {% else %}
+                                    <i class="thumbs down icon"></i>&nbsp;Unlike
+                                {% endif %}
+                            </button>
+                            &nbsp;{{ obj.num_likes }}
+                        </form>
+                    </div>
+                    <!-- comments -->
+                    <div>
+                        {% if obj.comment_set.all %}  <!-- if comment exist. i applied here reverse relationship -->
+                            {% for c in obj.comment_set.all %}
+                                <p>{{ c.body }}</p>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                    <!-- comment form -->
+                    <form action="" method="post" class="ui form">
+                        {% csrf_token %}
+                        <input type="hidden" name="post_id" value="{{obj.id}}">
+                        {{ c_form }}
+                        <button type="submit" class="ui primary button" name="submit_c_form">Comment</button>
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="five wide column">
+            {% if post_added %}
+            <div class="ui green message">Post added</div>
+            {% endif %}
+            <form action="" method="post" class="ui form" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ p_form.as_p }}
+                <button type="submit" class="ui button positive" name="submit_p_form">Send Post</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}

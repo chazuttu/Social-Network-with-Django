@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}search page{% endblock title %}
+
+{% block content %}
+   
+<div class="ui grid">
+    <div class="ten wide column centered">
+        <h2>Search Results</h2>
+            {% if allPosts|length < 1 %}
+                <div class="ui segment">
+                    <p>No search results</p>
+
+                    Your search query - <b>{{ query }}</b> - did not match any documents. <br><br>
+                    Suggestions: 
+                    <ul><br>
+                        <li>Make sure that all words are spelled correctly.</li>
+                        <li>Try different keywords.</li>
+                        <li>Try more general keywords.</li>
+                        <li>Try fewer keywords.</li>
+                    </ul> 
+                </div>
+            {% endif %}
+
+        {% for obj in allPosts %}
+
+        <div class="ui fluid card">
+            <div class="content">
+                <img class="ui avatar image" src={{obj.author.avatar.url}}> 
+                {{ obj.author.user }} - {{ obj.created|timesince}} ago
+            </div>
+            <div class="ui fluid image">
+                {% if obj.image %}
+                    <img src={{obj.image.url}}>
+                {% endif %}
+            </div>
+            <div class="content">
+                <a href="{% url 'posts:main-post-view' %}"><p>{{ obj.content }}</p></a>
+            </div>
+        </div>
+
+
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock content %}
